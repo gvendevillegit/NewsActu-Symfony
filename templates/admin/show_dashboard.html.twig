@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class='text-center'>Tableau de Bord</h1>
+
+    {% include 'include/_flashes.html.twig' %}
+
+    <h3 class="text-center">Tous les articles</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Catégorie</th>
+                <th>Titre</th>
+                <th>Contenu</th>
+                <th>Créé le</th>
+                <th>Moifié le</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+                <tr>
+                    <td>{{ article.id }}</td>
+                    <td>{{ article.category.name }}</td>
+                    <td>{{ article.title | length > 20 ? article.title|slice(0, 20) ~ '...' : article.title }}</td>
+                    <td>{{ article.content | length > 50 ? article.content|slice(0, 50) ~ '...' : article.content }}</td>
+                    <td>{{ article.createdAt | date('d/m/Y') }}</td>
+                    <td>{{ article.updateAt | date('d/m/Y') }}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

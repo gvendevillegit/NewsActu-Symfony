@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+ <div class="row">
+     <div class="col-12">
+        <h1 class="text-center">Ajouter un article</h1>
+     </div>
+ </div>
+
+ <div class="row">
+     <div class="col8 mx-auto">
+     
+        {# 1ère façon : affichage global du formulaire #}
+        {# {{ form(form) }} #}
+
+        {# 2éme façon : affichage détaillé du form, input par input #}
+        {{ form_start(form, {'attr' : {novalidate: 'novalidate'}} ) }}
+        
+            <div class="mb-3">
+                {{ form_row(form.title) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.subtitle) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.content) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.category) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.photo) }}
+            </div>
+
+            <button type="sublmit" class="d-block col-2 mx-auto btn btn-warning mb-3">Publier</button>
+
+        {{ form_end(form) }}
+     </div>
+ </div>
+
+{% endblock %}
