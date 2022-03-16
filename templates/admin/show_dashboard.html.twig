@@ -19,15 +19,37 @@
             </tr>
         </thead>
         <tbody>
-            {% for article in articles %}
+            {% for article in articles | reverse %}
                 <tr>
                     <td>{{ article.id }}</td>
                     <td>{{ article.category.name }}</td>
                     <td>{{ article.title | length > 20 ? article.title|slice(0, 20) ~ '...' : article.title }}</td>
-                    <td>{{ article.content | length > 50 ? article.content|slice(0, 50) ~ '...' : article.content }}</td>
+                    <td>{{ article.content | length > 25 ? article.content|slice(0, 25) ~ '...' : article.content }}</td>
                     <td>{{ article.createdAt | date('d/m/Y') }}</td>
                     <td>{{ article.updateAt | date('d/m/Y') }}</td>
-                    <td></td>
+                    <td>
+                        {% if article.deletedAt is null %}
+                            <a href="{{ path('update_article', {'id': article.id} ) }}" class="btn btn-info">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            &nbsp; 
+                            <a href="{{ path('soft_delete_article', {'id': article.id} ) }}" 
+                                onclick="return confirm('Voulez-vous vraiment archiver cet article ?')" 
+                                class="btn btn-danger">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        {% else %}
+                            <a href="{{ path('restore_article', {'id': article.id} ) }}" class="btn btn-outline-info">
+                                <i class="fa fa-trash-restore"></i>
+                            </a>
+                            &nbsp; 
+                            <a href="{{ path('hard_delete_article', {'id': article.id} ) }}" 
+                                onclick="return confirm('Voulez-vous vraiment supprmier définitement cet article ?')" 
+                                class="btn btn-outline-danger">
+                                <i class="fa fa-times-circle"></i>
+                            </a>
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

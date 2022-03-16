@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
@@ -82,6 +83,8 @@ class Article
         return $this;
     }
 
+    // en PHP < 8 : @Assert\NotBlank(message="Ce champ ne paut être vide")
+    #[Assert\NotBlank(message:"Ce champ ne peut être vide")]
     public function getContent(): ?string
     {
         return $this->content;
@@ -135,7 +138,7 @@ class Article
         return $this->deletedAt;
     }
 
-    public function setDeletedAt(?\DateTimeInterface $deletedAt): self
+    public function setDeletedAt(?\DateTimeInterface $deletedAt = null): self
     {
         $this->deletedAt = $deletedAt;
 

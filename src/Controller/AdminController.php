@@ -14,18 +14,23 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
+#[Route('/admin')]
 class AdminController extends AbstractController
 {
-    #[Route('/admin/tableau-de-bord', name: 'show_dashboard', methods:['GET'])]
+    #[Route('/tableau-de-bord', name: 'show_dashboard', methods:['GET|POST'])]
     public function showDashboard(EntityManagerInterface $entityManager): Response
     {
+        // Récupération des articles non archivés (deletedAt == null)
+        //$articles = $entityManager->getRepository(Article::class)->findBy(['deletedAt' => null]);
+
         $articles = $entityManager->getRepository(Article::class)->findAll();
+
         return $this->render('admin/show_dashboard.html.twig', [
             'articles' => $articles,
         ]);
     }
 
-    #[Route('/admin/creer-un-article', name: 'create_article', methods:['GET|POST'])]
+    #[Route('/creer-un-article', name: 'create_article', methods:['GET|POST|POST'])]
     public function createArticle(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $article = new Article();
@@ -85,6 +90,100 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('show_dashboard');
         } // END if($form)
 
-        return $this->render('admin/form/create_article.html.twig', ['form' => $form->createView()]);
-    }
-}
+        return $this->render('admin/form/form_article.html.twig', ['form' => $form->createView()]);
+    } // END function createArticle
+
+    // L'action est exéxutée 2x et accessible par les deux méthods (GET|POST)
+    #[Route('/modifier-un-article/{id}', name: 'update_article', methods:['GET|POST'])]
+    public function updateArticle(Article $article, Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    {
+        // Condition ternaire : $article->getPhoto() ?? ''
+        // => est égal à : isset($article->getPhoto()) ? $article->getPhoto() : '';
+        $originalPhoto = $article->getPhoto() ?? '';
+
+        // 1er TOUR en méthode GET
+        $form = $this->createForm(ArticleFormType::class, $article, [
+            'photo' => $originalPhoto
+        ])->handleRequest($request);
+        
+        // 2ème TOUR de l'action en méthode POST
+        if($form->isSubmitted() && $form->isValid()){
+            $article->setAlias($slugger->slug($article->getTitle()));
+            $article->setUpdateAt(new DateTime());
+
+            $file = $form->get('photo')->getData();
+
+            if($file){
+       
+                $extension = '.'.$file->guessExtension();
+                $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);                
+                $safeFilename = $article->getAlias();
+                $newFilename = $safeFilename. '_' .uniqid().$extension;
+
+                try{
+
+                    $file->move($this->getParameter('uploads_dir'), $newFilename);
+                    $article->setPhoto($newFilename);
+
+                }catch(FileException $exception){
+                    // code à executer si une erreur est attrapée
+
+                } // END catch()
+
+            }else{
+                $article->setPhoto($originalPhoto);
+            } // END if($file)
+
+            $entityManager->persist($article);
+            $entityManager->flush();
+
+            $this->addFlash('success', "L'article ".$article->getTitle()." a bien été modifié !");
+
+            return $this->redirectToRoute("show_dashboard");
+
+        } // END if($form)
+
+        // On retourne la vue pour la méthode GET
+        return $this->render('admin/form/form_article.html.twig', [
+            'form' => $form->createView(),
+            'article' => $article
+        ]);
+    } // END function updateArticle
+
+    #[Route('/archiver-un-article/{id}', name: 'soft_delete_article', methods:['GET'])]
+    public function softDeleteArticle(Article $article, EntityManagerInterface $entityManager): Response
+    {
+        // set la propriété deleteAt pour archiver l'article. De l'autre côté on affichera les article où deletedAt === null
+        $article->setDeletedAt(new DateTime());
+
+        $entityManager->persist($article);
+        $entityManager->flush();
+
+        $this->addFlash('success', "L'article ".$article->getTitle(). " a bien été archivé !");
+
+        return $this->redirectToRoute('show_dashboard');
+    }// END function softDeleteArticle
+
+    #[Route('/supprimer-un-article/{id}', name: 'hard_delete_article', methods:['GET'])]
+    public function hardDeleteArticle(Article $article, EntityManagerInterface $entityManager): Response
+    {
+        // Cette méthode supprime une ligne en BDD
+        $entityManager->remove($article);
+        $entityManager->flush();
+        $this->addFlash('success', "L'article ".$article->getTitle(). " a bien été supprimé de la base de données !");
+
+        return $this->redirectToRoute('show_dashboard');
+    }// END function hardDeleteArticle
+
+    #[Route('/restaurer-un-article/{id}', name: 'restore_article', methods:['GET'])]
+    public function restoreArticle(Article $article, EntityManagerInterface $entityManager): Response
+    {
+        $article->setDeletedAt();
+        $entityManager->persist($article);
+        $entityManager->flush();
+        $this->addFlash('success', "L'article ".$article->getTitle(). " a bien été restauré des archives !");
+
+        return $this->redirectToRoute('show_dashboard');
+    }// END function restoreArticle
+
+} // END Class
