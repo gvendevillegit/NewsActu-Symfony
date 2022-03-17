@@ -1,0 +1,33 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-12">
+            {% include "include/_flashes.html.twig" %}
+
+        `</div>
+    </div>
+
+    <div class="row">
+        <div class="col-10 my-4 mx-auto">
+
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="card-title text-center mb-5">{{ article.title }}</h1>
+                    <p class="h4 text-center mb-3 text-secondary">{{ article.subtitle }}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item text-center text-muted">Créé le {{ article.createdAt | date('d/m/Y H:i') }} | <span class="text-muted">Mis à jour le {{ article.updateAt | date('d/m/Y H:i') }}</span></li>
+                </ul>
+                <img class="img-custom" src="{{ asset('uploads/') ~ article.photo }}" alt="{{ article.title }}">
+                <div class="card-body">
+                    {# "raw" marque la valeur comme étant sûre, elle désactive la securité #}
+                    <p class="card-text my-4 col-10 mx-auto">{{ article.content | raw }}</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

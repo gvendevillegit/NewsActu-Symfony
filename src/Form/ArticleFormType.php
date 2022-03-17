@@ -64,6 +64,7 @@ class ArticleFormType extends AbstractType
                     new NotBlank([
                         'message' => "Ce champ ne peut être vide"
                     ]),
+                    
                 ],
             ])
             ->add('photo', FileType::class, [
