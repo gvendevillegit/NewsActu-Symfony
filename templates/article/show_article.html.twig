@@ -30,6 +30,26 @@
         </div>
     </div>
 
-    {# {{ render(controller('App\Controller\CommentaryController::addCommentary', ['id', article.id]) ) }} #}
+    {# {{ render(controller('App\\Controller\\CommentaryController::addCommentary', {'id': article.id} )) }} #}
     {{ render(url('add_commentary', {'id': article.id}) ) }}
+
+    <hr>
+
+    <h3>Espace Commentaires</h3>
+
+    {% if commentaries is not null%}
+
+        <div class="row">
+            <div class="col-5">
+                {% for commentary in commentaries %}
+                    <div class="bg-light shadow my-2">
+                        <p class="ps-3 text-muted">Crée le: {{ commentary.createdAt | date('d/m/Y à H:i')}} | Ecrit par : </p>
+                        <p class="ps-3">{{ commentary.comment }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    {% endif %}
+
 {% endblock %}
