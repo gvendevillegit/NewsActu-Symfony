@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use DateTime;
 use App\Entity\Article;
+use App\Entity\Categorie;
 use App\Entity\Commentary;
 use App\Form\ArticleFormType;
 use Doctrine\ORM\EntityManager;
@@ -30,5 +31,21 @@ class ArticleController extends AbstractController
             'commentaries' => $commentaries
         ]);
     } // END Function showArticle
+
+    // Pour PHP < 8
+    // @Route("/voir/{alias}.html", name="show_articles_from_category", methods={"GET"})
+    #[Route('/voir/{alias}.html', name: "show_articles_from_category", methods: ['GET'])]
+    public function showArticlesFromCategorie(Categorie $categorie, EntityManagerInterface $entityManager): Response
+    {
+        $articles = $entityManager->getRepository(Article::class)->findBy([
+            'category' => $categorie->getId(),
+            'deletedAt' => null
+        ]);
+
+        return $this->render('article/show_articles_from_category.html.twig', [
+            'articles' => $articles,
+            'categorie' => $categorie
+        ]);
+    } // END Function showArticlesFromCategorie
 
 } // END Class ArticleController

@@ -32,4 +32,4 @@ class DefaultController extends AbstractController
         ]);
     } // END function renderCategoryInNav
 
-}// End class DefaultController
+} // End class DefaultController
