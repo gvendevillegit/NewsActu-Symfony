@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\ArticleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
@@ -40,6 +43,14 @@ class Article
     #[ORM\ManyToOne(targetEntity: Categorie::class, inversedBy: 'articles')]
     #[ORM\JoinColumn(nullable: false)]
     private $category;
+
+    #[ORM\OneToMany(mappedBy: 'article', targetEntity: Commentary::class)]
+    private $commentaries;
+
+    public function __construct()
+    {
+        $this->commentaries = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -82,6 +93,8 @@ class Article
         return $this;
     }
 
+    // en PHP < 8 : @Assert\NotBlank(message="Ce champ ne paut être vide")
+    #[Assert\NotBlank(message:"Ce champ ne peut être vide")]
     public function getContent(): ?string
     {
         return $this->content;
@@ -135,7 +148,7 @@ class Article
         return $this->deletedAt;
     }
 
-    public function setDeletedAt(?\DateTimeInterface $deletedAt): self
+    public function setDeletedAt(?\DateTimeInterface $deletedAt = null): self
     {
         $this->deletedAt = $deletedAt;
 
@@ -150,6 +163,36 @@ class Article
     public function setCategory(?Categorie $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commentary>
+     */
+    public function getCommentaries(): Collection
+    {
+        return $this->commentaries;
+    }
+
+    public function addCommentary(Commentary $commentary): self
+    {
+        if (!$this->commentaries->contains($commentary)) {
+            $this->commentaries[] = $commentary;
+            $commentary->setArticle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentary(Commentary $commentary): self
+    {
+        if ($this->commentaries->removeElement($commentary)) {
+            // set the owning side to null (unless already changed)
+            if ($commentary->getArticle() === $this) {
+                $commentary->setArticle(null);
+            }
+        }
 
         return $this;
     }

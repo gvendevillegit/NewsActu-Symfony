@@ -1,0 +1,55 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-12">
+            {% include "include/_flashes.html.twig" %}
+
+        `</div>
+    </div>
+
+    <div class="row">
+        <div class="col-10 my-4 mx-auto">
+
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="card-title text-center mb-5">{{ article.title }}</h1>
+                    <p class="h4 text-center mb-3 text-secondary">{{ article.subtitle }}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item text-center text-muted">Créé le {{ article.createdAt | date('d/m/Y H:i') }} | <span class="text-muted">Mis à jour le {{ article.updateAt | date('d/m/Y H:i') }}</span></li>
+                </ul>
+                <img class="img-custom" src="{{ asset('uploads/') ~ article.photo }}" alt="{{ article.title }}">
+                <div class="card-body">
+                    {# "raw" marque la valeur comme étant sûre, elle désactive la securité #}
+                    <p class="card-text my-4 col-10 mx-auto">{{ article.content | raw }}</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {# {{ render(controller('App\\Controller\\CommentaryController::addCommentary', {'id': article.id} )) }} #}
+    {{ render(url('add_commentary', {'id': article.id}) ) }}
+
+    <hr>
+
+    <h3>Espace Commentaires</h3>
+
+    {% if commentaries is not null%}
+
+        <div class="row">
+            <div class="col-5">
+                {% for commentary in commentaries %}
+                    <div class="bg-light shadow my-2">
+                        <p class="ps-3 text-muted">Crée le: {{ commentary.createdAt | date('d/m/Y à H:i')}} | Ecrit par : </p>
+                        <p class="ps-3">{{ commentary.comment }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endblock %}

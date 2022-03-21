@@ -1,0 +1,11 @@
+<div class="row my-5">
+    <div class="col-8 mx-auto">
+    
+        {{ form_start(form, {'attr': {action: path('add_commentary', {'id': app.request.attributes.get('id')} ) } } ) }}
+
+            {{ form_row(form.comment) }}
+
+        {{ form_end(form) }}
+
+    </div>
+</div>
