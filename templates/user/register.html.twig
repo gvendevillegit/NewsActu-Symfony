@@ -1,0 +1,28 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<h1 class="text-center mx-auto my-4">Inscription</h1>
+
+<div class="row">
+    <div class="col-10 mx-auto">
+        {{ form_start(form) }}
+
+            <div class="row">
+                <div class="col-6">
+                    {{ form_row(form.prenom) }}
+                </div>
+
+                <div class="col-6">
+                    {{ form_row(form.nom) }}
+                </div>
+            </div>
+
+            {{ form_row(form.email) }}
+            {{ form_row(form.password) }}
+
+        {{ form_end(form) }}
+    </div>
+</div>
+
+{% endblock %}
