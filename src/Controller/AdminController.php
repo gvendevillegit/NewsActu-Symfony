@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use DateTime;
+use App\Entity\User;
 use App\Entity\Article;
+use App\Entity\Categorie;
 use App\Form\ArticleFormType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,26 +13,63 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-#[Route('/admin')]
+
+//#[Route('/admin')]
+/**
+ * @Route ("/admin")
+ */
 class AdminController extends AbstractController
 {
-    #[Route('/tableau-de-bord', name: 'show_dashboard', methods:['GET|POST'])]
+    // PHP 8
+    //#[Route('/tableau-de-bord', name: 'show_dashboard', methods:['GET|POST'])]
+
+    /**
+     * @Route("/tableau-de-bord", name="show_dashboard", methods={"GET|POST"})
+     * //@IsGranted("ROLE_ADMIN")
+     */
     public function showDashboard(EntityManagerInterface $entityManager): Response
     {
+        /*
+         * try/catch fait partie de PHP nativement.
+         * Cela a été créé pour gérer les class Exception (erreur).
+         * On se sert d'un try/catch lorsqu'on utilise des méthodes (fonctions) QUI LANCE (throw) une Exception.
+         * Si la méthode lance l'erreur pendant son exécution, alors l'Excepetion sera 'attrapée' (catch).
+         * Le code dans les accolades du catch sera alors exécuté.
+         */
+        try{
+            $this->denyAccessUnlessGranted('ROLE_ADMIN');    
+        }
+        catch(AccessDeniedException $exception)
+        {
+            //dd($exception->getMessage());
+            $this->addFlash('warning', 'Cette partie du site est réservée.');
+            return $this->redirectToRoute('default_home');
+        }
+        
         // Récupération des articles non archivés (deletedAt == null)
         //$articles = $entityManager->getRepository(Article::class)->findBy(['deletedAt' => null]);
 
         $articles = $entityManager->getRepository(Article::class)->findAll();
+        $categories = $entityManager->getRepository(Categorie::class)->findAll();
+        $users = $entityManager->getRepository(User::class)->findAll();
 
         return $this->render('admin/show_dashboard.html.twig', [
             'articles' => $articles,
+            'categories' => $categories,
+            'users' => $users,
         ]);
     }
 
-    #[Route('/creer-un-article', name: 'create_article', methods:['GET|POST|POST'])]
+    // #[Route('/creer-un-article', name: 'create_article', methods:['GET|POST'])]
+
+    /**
+     * @Route("/creer-un-article", name="create_article", methods={"GET|POST"})
+     */
     public function createArticle(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $article = new Article();
@@ -46,6 +85,10 @@ class AdminController extends AbstractController
             $article->setAlias($slugger->slug($article->getTitle()));
             $article->setCreatedAt(new DateTime());
             $article->setUpdateAt(new DateTime());
+
+            // association d'un auteur à un article
+            // $this->getUser() retourne un objet de type UserInterface
+            $article->setAuthor($this->getUser());
 
             // Variabilisation du fichier 'photo' uploadé.
             $file = $form->get('photo')->getData();
@@ -94,7 +137,11 @@ class AdminController extends AbstractController
     } // END function createArticle
 
     // L'action est exéxutée 2x et accessible par les deux méthods (GET|POST)
-    #[Route('/modifier-un-article/{id}', name: 'update_article', methods:['GET|POST'])]
+    //#[Route('/modifier-un-article/{id}', name: 'update_article', methods:['GET|POST'])]
+    
+    /**
+     * @Route("/modifier-un-article/{id}", name="update_article", methods={"GET|POST"})
+     */
     public function updateArticle(Article $article, Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         // Condition ternaire : $article->getPhoto() ?? ''
@@ -150,7 +197,11 @@ class AdminController extends AbstractController
         ]);
     } // END function updateArticle
 
-    #[Route('/archiver-un-article/{id}', name: 'soft_delete_article', methods:['GET'])]
+    //#[Route('/archiver-un-article/{id}', name: 'soft_delete_article', methods:['GET'])]
+
+    /**
+     * @Route("/archiver-un-article/{id}", name="soft_delete_article", methods={"GET|POST"})
+     */
     public function softDeleteArticle(Article $article, EntityManagerInterface $entityManager): Response
     {
         // set la propriété deleteAt pour archiver l'article. De l'autre côté on affichera les article où deletedAt === null
@@ -164,7 +215,12 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('show_dashboard');
     }// END function softDeleteArticle
 
-    #[Route('/supprimer-un-article/{id}', name: 'hard_delete_article', methods:['GET'])]
+    // Pour PHP8
+    //#[Route('/supprimer-un-article/{id}', name: 'hard_delete_article', methods:['GET'])]
+
+    /**
+     * @Route("/supprimer-un-article/{id}", name="hard_delete_article", methods={"GET"})
+     */
     public function hardDeleteArticle(Article $article, EntityManagerInterface $entityManager): Response
     {
         // Cette méthode supprime une ligne en BDD
@@ -175,7 +231,11 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('show_dashboard');
     }// END function hardDeleteArticle
 
-    #[Route('/restaurer-un-article/{id}', name: 'restore_article', methods:['GET'])]
+    //#[Route('/restaurer-un-article/{id}', name: 'restore_article', methods:['GET'])]
+
+    /**
+     * @Route("/restaurer-un-article/{id}", name="restore_article", methods={"GET"})
+     */
     public function restoreArticle(Article $article, EntityManagerInterface $entityManager): Response
     {
         $article->setDeletedAt();

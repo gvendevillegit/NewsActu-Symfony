@@ -14,9 +14,18 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserController extends AbstractController
 {
-    #[Route('/inscription', name: "user_register", methods: ['GET|POST'])]
+    //#[Route('/inscription', name: "user_register", methods: ['GET|POST'])]
+    /**
+     * @Route("/inscription", name="user_register", methods={"GET|POST"})]
+     */
     public function register(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
+        # Si l'utilisateur est connecté, alors on le redirige.
+        if($this->getUser()){
+            $this->addFlash('warning', "Vous êtes déjà inscrit");
+            return $this->redirectToRoute('default_home');
+        }
+
         $user = new User();
 
         $form = $this->createForm(RegisterFormType::class, $user)

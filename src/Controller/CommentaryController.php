@@ -14,8 +14,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CommentaryController extends AbstractController
 {
-    // En PHP < 8  @Route("/ajouter-un-commentaire?article_id={id}", name="add_commentary", methods={"GET|POST"})]
-    #[Route('/ajouter-un-commentaire?article_id={id}', name: "add_commentary", methods: ['GET|POST'])]
+    // En PHP < 8  
+    //#[Route('/ajouter-un-commentaire?article_id={id}', name: "add_commentary", methods: ['GET|POST'])]
+    /**
+     * @Route("/ajouter-un-commentaire?article_id={id}", name="add_commentary", methods={"GET|POST"})]
+     */
     public function addCommentary(Article $article, Request $request, EntityManagerInterface $entityManager): Response
     {
         $commentary = new Commentary;
@@ -40,6 +43,9 @@ class CommentaryController extends AbstractController
             $commentary->setArticle($article);
             $commentary->setCreatedAt(new DateTime);
             $commentary->setUpdatedAt(new DateTime);
+
+            // On set l'auteur du commentaire
+            $commentary->setAuthor($this->getUser);
 
             $entityManager->persist($commentary);
             $entityManager->flush();

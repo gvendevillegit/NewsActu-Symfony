@@ -7,30 +7,56 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CategorieRepository::class)]
+//#[ORM\Entity(repositoryClass: CategorieRepository::class)]
+/**
+ * @ORM\Entity(repositoryClass=CategorieRepository::class)
+ */
 class Categorie
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    // #[ORM\Id]
+    // #[ORM\GeneratedValue]
+    // #[ORM\Column(type: 'integer')]
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
     private $id;
 
-    #[ORM\Column(type: 'string', length: 50)]
+    //#[ORM\Column(type: 'string', length: 50)]
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
     private $name;
 
-    #[ORM\Column(type: 'string', length: 50)]
+    //#[ORM\Column(type: 'string', length: 50)]
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
     private $alias;
 
-    #[ORM\Column(type: 'datetime')]
+    // #[ORM\Column(type: 'datetime')]
+    /**
+     * @ORM\Column(type="datetime")
+     */
     private $createdAt;
 
-    #[ORM\Column(type: 'datetime')]
+    //#[ORM\Column(type: 'datetime')]
+    /**
+     * @ORM\Column(type="datetime")
+     */
     private $updatedAt;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    //#[ORM\Column(type: 'datetime', nullable: true)]
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
     private $deletedAt;
 
-    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Article::class)]
+    //#[ORM\OneToMany(mappedBy: 'category', targetEntity: Article::class)]
+    /**
+     * @ORM\OneToMany(targetEntity=Article::class, mappedBy="category")
+     */
     private $articles;
 
     public function __construct()

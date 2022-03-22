@@ -9,29 +9,45 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{{ path('default_home') }}">Accueil</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ path('user_register') }}">S'inscrire</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Se connecter</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Espace Admin
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{{ path('show_dashboard') }}">Dashboard</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{{ path('create_article') }}">Ajouter un article</a></li>
-            <li><a class="dropdown-item" href="#">Ajouter une catégorie</a></li>
-            {# <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li> #}
-          </ul>
-        </li>
+        {% if not app.user %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ path('user_register') }}">S'inscrire</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ path('app_login') }}">Se connecter</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
+          </li>
+        {% endif %}  
+
+        {% if is_granted('ROLE_ADMIN') %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Espace Admin
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="{{ path('show_dashboard') }}">Dashboard</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{{ path('create_article') }}">Ajouter un article</a></li>
+              <li><a class="dropdown-item" href="#">Ajouter une catégorie</a></li>
+              {# <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">Something else here</a></li> #}
+            </ul>
+          </li>
+        {% endif %}
+        
         {# <li class="nav-item">
           <a class="nav-link disabled">Disabled</a>
         </li> #}
+
       </ul>
+      {% if app.user %}
+        <div style="float: rigth; padding-right: 50px;">
+          <i class="fa fa-user text-warning"></i><span class="text-warning"> Bonjour <span class="text-dark">{{app.user.prenom}} {{app.user.nom}}</span>
+        </div>
+      {% endif %}
     </div>
   </div>
 </nav>

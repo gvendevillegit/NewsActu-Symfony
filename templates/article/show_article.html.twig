@@ -18,7 +18,7 @@
                     <p class="h4 text-center mb-3 text-secondary">{{ article.subtitle }}</p>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item text-center text-muted">Créé le {{ article.createdAt | date('d/m/Y H:i') }} | <span class="text-muted">Mis à jour le {{ article.updateAt | date('d/m/Y H:i') }}</span></li>
+                    <li class="list-group-item text-center text-muted">Créé le {{ article.createdAt | date('d/m/Y H:i') }} | <span class="text-muted">Mis à jour le {{ article.updateAt | date('d/m/Y H:i') }} | Auteur : {{ article.author.prenom }} {{ article.author.nom }}</span></li>
                 </ul>
                 <img class="img-custom" src="{{ asset('uploads/') ~ article.photo }}" alt="{{ article.title }}">
                 <div class="card-body">
@@ -30,9 +30,17 @@
         </div>
     </div>
 
-    {# {{ render(controller('App\\Controller\\CommentaryController::addCommentary', {'id': article.id} )) }} #}
-    {{ render(url('add_commentary', {'id': article.id}) ) }}
-
+    {% if app.user %}
+        {# {{ render(controller('App\\Controller\\CommentaryController::addCommentary', {'id': article.id} )) }}#}
+        {{ render(url('add_commentary', {'id': article.id}) ) }}
+    {% else %}
+        <div class="row">
+            <div class="col-8 mx-auto text-center my-3">
+                <p class="h4"> Vous devez être connecté pour commenter cet article </p>
+                <a class="d-block col-3 btn btn-info mx-auto" href="{{ path('app_login') }}">Connexion</a>
+            </div>
+        </div>
+    {% endif %}
     <hr>
 
     <h3>Espace Commentaires</h3>

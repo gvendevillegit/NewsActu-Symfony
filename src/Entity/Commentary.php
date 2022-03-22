@@ -8,7 +8,10 @@ use App\Repository\CommentaryRepository;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-#[ORM\Entity(repositoryClass: CommentaryRepository::class)]
+//#[ORM\Entity(repositoryClass: CommentaryRepository::class)]
+/**
+ * @ORM\Entity(repositoryClass=CommentaryRepository::class)
+ */
 class Commentary
 {
     // Un 'trait' est une sorte de class PHP qui vous sert à réutiliser des propriétés et des Setters et Getters
@@ -19,17 +22,34 @@ class Commentary
     use TimestampableEntity;
     use SoftDeleteableEntity;
 
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    // #[ORM\Id]
+    // #[ORM\GeneratedValue]
+    // #[ORM\Column(type: 'integer')]
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
     private $id;
 
-    #[ORM\Column(type: 'text')]
+    //#[ORM\Column(type: 'text')]
+    /**
+     * @ORM\Column(type="text")
+     */
     private $comment;
 
-    #[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'commentaries')]
-    #[ORM\JoinColumn(nullable: false)]
+    //#[ORM\ManyToOne(targetEntity: Article::class, inversedBy: 'commentaries')]
+    //#[ORM\JoinColumn(nullable: false)]
+    /**
+     * @ORM\ManyToOne(targetEntity=Article::class, inversedBy="commentaries")
+     * @ORM\JoinColumn(nullable=true)
+     */
     private $article;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="commentaries")
+     */
+    private $author;
 
     public function getId(): ?int
     {
@@ -56,6 +76,18 @@ class Commentary
     public function setArticle(?Article $article): self
     {
         $this->article = $article;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

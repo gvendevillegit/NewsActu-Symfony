@@ -55,4 +55,72 @@
         </tbody>
     </table>
 
+    <div class="row my-3">
+
+        <div class="col-6">
+            <h3 class="text-center">Toutes les catégories</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nom</th>
+                        <th>Créée le</th>
+                        <th>Modifiée</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                        <tr>
+                            <td>{{ category.id }}</td>
+                            <td>{{ category.name }}</td>
+                            <td>{{ category.createdAt | date('d/m/Y') }}</td>
+                            <td>{{ category.updatedAt | date('d/m/Y') }}</td>
+                            <td>
+                                 {% if category.deletedAt is null %}
+                                    <a href="" class="btn btn-info">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    &nbsp; 
+                                    <a href="" 
+                                        onclick="return confirm('Voulez-vous vraiment archiver cette catégorie ?')" 
+                                        class="btn btn-danger">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                {% else %}
+                                    <a href="" class="btn btn-outline-info">
+                                        <i class="fa fa-trash-restore"></i>
+                                    </a>
+                                    &nbsp; 
+                                    <a href="" 
+                                        onclick="return confirm('Voulez-vous vraiment supprmier définitement cet article ?')" 
+                                        class="btn btn-outline-danger">
+                                        <i class="fa fa-times-circle"></i>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    
+
+
+
+        <div class="col-6">
+            <h3 class="text-center">Toutes les utilisateur</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+
+                    </tr>
+                </thead>
+                <tbody>
+                   
+                </tbody>
+            </table>
+        </div>
+
+
 {% endblock %}

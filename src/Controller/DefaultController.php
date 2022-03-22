@@ -11,7 +11,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DefaultController extends AbstractController
 {
-    #[Route('/', name: "default_home", methods: ['GET'])]
+    //#[Route('/', name: "default_home", methods: ['GET'])]
+    /**
+     * @Route("/", name="default_home", methods={"GET"})
+     */
     public function home(EntityManagerInterface $entityManager): Response
     {
         $article = $entityManager->getRepository(Article::class)->findBy([
@@ -22,7 +25,10 @@ class DefaultController extends AbstractController
         ]);
     } // END function home
 
-    #[Route('/categories', name: "render_categories_in_nav", methods: ['GET'])]
+    //#[Route('/categories', name: "render_categories_in_nav", methods: ['GET'])]
+    /**
+     * @Route("/categories", name="render_categories_in_nav", methods={"GET"})
+     */
     public function renderCategoriesInNav(EntityManagerInterface $entityManager): Response
     {
         $categories = $entityManager->getRepository(Categorie::class)->findBy(['deletedAt' => null]);

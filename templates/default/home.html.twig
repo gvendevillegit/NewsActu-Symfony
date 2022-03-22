@@ -3,6 +3,9 @@
 {% block body %}
 
 	<h1 class="text-center my-3 ">Tous les articles</h1>
+
+	{% include 'include/_flashes.html.twig' %}
+
 	<div class="row mx-auto">
 		{% for article in articles %}
 			<div class="col-3 my-3 ms-2">
