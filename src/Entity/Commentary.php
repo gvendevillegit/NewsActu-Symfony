@@ -85,8 +85,9 @@ class Commentary
     {
         return $this->author;
     }
-
-    public function setAuthor(?User $author): self
+    // Si on a un problème de typeage faire :
+    // public function setAuthor(?UserInterface $author): self
+    public function setAuthor(?UserInterface $author): self
     {
         $this->author = $author;
 
