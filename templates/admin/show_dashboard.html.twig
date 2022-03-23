@@ -78,22 +78,22 @@
                             <td>{{ category.updatedAt | date('d/m/Y') }}</td>
                             <td>
                                  {% if category.deletedAt is null %}
-                                    <a href="" class="btn btn-info">
+                                    <a href="{{ path('update_category', {'id' : category.id}) }}" class="btn btn-info">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                     &nbsp; 
-                                    <a href="" 
+                                    <a href="{{ path('soft_delete_categorie', {'id' : category.id}) }}" 
                                         onclick="return confirm('Voulez-vous vraiment archiver cette catégorie ?')" 
                                         class="btn btn-danger">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 {% else %}
-                                    <a href="" class="btn btn-outline-info">
+                                    <a href="{{ path('restore_categorie', {'id' : category.id}) }}" class="btn btn-outline-info">
                                         <i class="fa fa-trash-restore"></i>
                                     </a>
                                     &nbsp; 
-                                    <a href="" 
-                                        onclick="return confirm('Voulez-vous vraiment supprmier définitement cet article ?')" 
+                                    <a href="{{ path('hard_delete_categorie', {'id' : category.id}) }}" 
+                                        onclick="return confirm('Voulez-vous vraiment supprimer définitement cette catégorie ?')" 
                                         class="btn btn-outline-danger">
                                         <i class="fa fa-times-circle"></i>
                                     </a>

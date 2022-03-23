@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CommentaryRepository;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 //#[ORM\Entity(repositoryClass: CommentaryRepository::class)]
 /**

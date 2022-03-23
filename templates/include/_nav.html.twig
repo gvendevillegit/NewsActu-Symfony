@@ -1,57 +1,88 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="{{ path('default_home') }}">NewsActu</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{{ path('default_home') }}">Accueil</a>
-        </li>
-        {% if not app.user %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ path('user_register') }}">S'inscrire</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ path('app_login') }}">Se connecter</a>
-          </li>
+	<div class="container-fluid">
+		<a class="navbar-brand" href="{{ path('default_home') }}">NewsActu</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<li class="nav-item">
+					<a class="nav-link active" aria-current="page" href="{{ path('default_home') }}">Accueil</a>
+				</li>
+				{% if not app.user %}
+					<li class="nav-item">
+						<a class="nav-link" href="{{ path('user_register') }}">S'inscrire</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{{ path('app_login') }}">Se connecter</a>
+					</li>
+				{% else %}
+					
+					<li class="nav-item">
+						<a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
+					</li>
+				{% endif %}
+
+				{% if is_granted('ROLE_ADMIN') %}
+
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							Espace Admin
+						</a>
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li>
+								<a class="dropdown-item" href="{{ path('show_dashboard') }}">Dashboard</a>
+							</li>
+							<li><hr class="dropdown-divider"></li>
+							<li>
+								<a class="dropdown-item" href="{{ path('create_article') }}">Ajouter un article</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="{{ path('create_category') }}">Ajouter une catégorie</a>
+							</li>
+							<li><hr class="dropdown-divider"></li>
+							{# <li><hr class="dropdown-divider"></li>
+							              <li><a class="dropdown-item" href="#">Something else here</a></li> #}
+						</ul>
+					</li>
         {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
-          </li>
-        {% endif %}  
-
-        {% if is_granted('ROLE_ADMIN') %}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Espace Admin
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="{{ path('show_dashboard') }}">Dashboard</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="{{ path('create_article') }}">Ajouter un article</a></li>
-              <li><a class="dropdown-item" href="#">Ajouter une catégorie</a></li>
-              {# <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li> #}
-            </ul>
-          </li>
-        {% endif %}
-        
-        {# <li class="nav-item">
-          <a class="nav-link disabled">Disabled</a>
-        </li> #}
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownProfil" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							Espace Profil
+						</a>
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdownProfil">
+							<li>
+								<a class="dropdown-item" href="#">Mes informations</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="#">Mes commentaires</a>
+							</li>
+							<li><hr class="dropdown-divider"></li>
+							<li>
+								<a class="dropdown-item" href="#">Désactiver mon profil</a>
+							</li>
+						</ul>
+					</li>
+				{% endif %}
 
-      </ul>
-      {% if app.user %}
-        <div style="float: rigth; padding-right: 50px;">
-          <i class="fa fa-user text-warning"></i><span class="text-warning"> Bonjour <span class="text-dark">{{app.user.prenom}} {{app.user.nom}}</span>
-        </div>
-      {% endif %}
-    </div>
-  </div>
-</nav>
+				{# <li class="nav-item">
+				          <a class="nav-link disabled">Disabled</a>
+				        </li> #}
 
-<div class="bg-light">
-  {{ render(url('render_categories_in_nav')) }}
-</div>
+			</ul>
+			{% if app.user %}
+				<div style="float: rigth; padding-right: 50px;">
+					<i class="fa fa-user text-warning"></i>
+					<span class="text-warning">
+						Bonjour
+						<span class="text-dark">{{app.user.prenom}}
+							{{app.user.nom}}</span>
+					</div>
+				{% endif %}
+			</div>
+		</div>
+	</nav>
+
+	<div class="bg-light">
+		{{ render(url('render_categories_in_nav')) }}
+	</div>
