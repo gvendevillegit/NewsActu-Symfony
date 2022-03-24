@@ -49,12 +49,40 @@
 
         <div class="row">
             <div class="col-5">
+                
                 {% for commentary in commentaries %}
-                    <div class="bg-light shadow my-2">
-                        <p class="ps-3 text-muted">Crée le: {{ commentary.createdAt | date('d/m/Y à H:i')}} | Ecrit par : </p>
-                        <p class="ps-3">{{ commentary.comment }}</p>
-                    </div>
+                    {% if commentary.deletedAt is null %}
+
+                        <div class="bg-light shadow my-2">
+                            <p class="ps-3 text-muted">
+                                Crée le: {{ commentary.createdAt | date('d/m/Y à H:i')}} | Ecrit par : {{ commentary.author ? commentary.author.prenom ~ ' ' ~ commentary.author.nom : "Pas d'auteur"}}
+                                {% if commentary.author is same as app.user %}
+                                    <span style="float: right" class="pe-2" onclick="return confirm('Voulez-vous archiver ce commentaire ? \n\nVous retrouverez vos commentaires archivés dans la partie \'Mes commentaire\' de votre profil.')">
+                                        {#=================== 1ère FACON ===================#}
+                                        {# ==> SUITE du commentaire de : CommentaryContrelloer::softDeleteCommentary()
+                                          Ici nous avons construit grâce au sympbole '?', dans le "href' après le {{ path() }}, notre URL avec mes arguments nécessaires pour la redirection (voir commentaryCotnroller)   
+                                        #}
+                                        {# <a href="{{ path('soft_delete_commentary', {'id': commentary.id}) }}?cat_alias={{ article.category.alias }}&article_alias={{ article.alias }}&article_id={{ article.id }}" class="text-danger"><i class="fa fa-times-circle"></i></a>#}
+                                        {#==================================================#}
+
+                                        {#=================== 2ème FACON ===================#}
+                                        {# ==> SUITE du commentaire de : CommentaryContrelloer::softDeleteCommentary()
+                                          Ici nous avons retiré tous paramètres dans l'URL. (excepté le paramètre OBLIGATOIR de la route {id}
+
+                                        #}
+                                        <a href="{{ path('soft_delete_commentary', {'id': commentary.id} ) }}" class="text-danger"><i class="fa fa-times-circle"></i></a>
+                                        {#==================================================#}
+                                    </span>                                  
+                                {% endif %}
+                            </p>
+                            {# Ancre Interne Commentary #}
+                           
+                            <p class="ps-3">{{ commentary.comment }}</p>
+                        </div>
+                    
+                    {% endif %}
                 {% endfor %}
+                 <div id="link-commentary"></a>
             </div>
         </div>
 

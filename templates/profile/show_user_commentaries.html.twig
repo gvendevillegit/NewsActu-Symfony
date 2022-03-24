@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-12">
+            {% include "include/_flashes.html.twig" %}
+
+        `</div>
+    </div>
+
+    <div class="row">
+        <div class="col-6 mt-4">
+
+            <h3 class="h4">Commentaires en ligne</h3>
+
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Contenu</th>
+                    <th>Posté sur</th>
+                    <th>Crée le</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% if commentaries is not empty %}
+                    {% for commentary in commentaries %}
+                        {% if commentary.deletedAt is null %}
+
+                            <tr>
+                                <td>{{ commentary.comment | slice(0,15) }}</td>
+                                <td>{{ commentary.article.title | slice(0, 10) }}</td>
+                                <td>{{ commentary.createdAt | date('d/m/Y') }}</td>
+                                <td>
+                                    <a href="{{ path('soft_delete_commentary', {'id': commentary.id}) }}" class="btn btn-info" title="Modifier mon profil"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                </tbody>
+            </table>
+        </div> {# END .col-6 #}
+
+        <div class="col-6 mt-4">
+
+            <h3 class="h4">Commentaires archivés</h3>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Contenu</th>
+                    <th>Posté sur</th>
+                    <th>Crée le</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% if commentaries is not empty %}
+                    {% for commentary in commentaries %}
+                        {% if commentary.deletedAt is not null %}
+
+                            <tr>
+                                <td>{{ commentary.comment | slice(0,15) }}</td>
+                                <td>{{ commentary.article.title | slice(0, 10) }}</td>
+                                <td>{{ commentary.createdAt | date('d/m/Y') }}</td>
+                                <td>
+                                    <a href="{{ path('soft_delete_commentary', {'id': commentary.id}) }}" class="btn btn-info" title="Modifier mon profil"><i class="fa fa-trash-restore"></i></a>
+                                </td>
+                            </tr>
+
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                </tbody>
+            </table>
+
+        </div>
+
+    </div> {# END .row #}
+
+
+
+{% endblock %}
+
+

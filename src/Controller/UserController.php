@@ -50,5 +50,31 @@ class UserController extends AbstractController
         return $this->render('user/register.html.twig', [
             'form' => $form->createView()
         ]);
-    }
+    } // END function UserController
+
+    /**
+     * @Route("profile/modifier-mon-utilisateur/{id}", name="update_user", methods={"GET|POST"})
+     */
+    public function updateUser(User $user, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(RegisterFormType::class, $user)
+            ->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $user->setUpdatedAt(new DateTime());
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $this->addFlash('success', "Vous avez mis à jour votre utilisateur ". $user->getNom()." ".$user->getPrenom() ." avec succès !");
+            
+            return $this->redirectToRoute('show_profile');
+        }
+
+        return $this->render('user/update_user.html.twig', [
+            'form' => $form->createView()
+        ]);
+      
+    } // END function updateUser
+    
 } // END Class UserController
