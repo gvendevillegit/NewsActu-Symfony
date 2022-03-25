@@ -122,5 +122,18 @@ class CommentaryController extends AbstractController
 
         ]);
     } // END function softDeletedCommentary
+
+    /**
+     * @Route("/restaurer-un-commentaire/{id}", name="restore_commentary", methods={"GET"})
+     */
+    public function restoreCommentary(Commentary $commentary, EntityManagerInterface $entityManager): Response
+    {
+        $commentary->setDeletedAt(NULL);
+        $entityManager->persist($commentary);
+        $entityManager->flush();
+        $this->addFlash('success', "Le commentaire ".$commentary->getComment(). " a bien été restaurée des archives !");
+
+        return $this->redirectToRoute('show_user_commentaries');
+    }// END function restoreCommentary
     
 }// End class CommentaryController

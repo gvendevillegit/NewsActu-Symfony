@@ -70,8 +70,12 @@
 				        </li> #}
 
 			</ul>
+
+			{# ZONE RECHERCHE #}
+			{{ render(url('render_search_bar')) }}
+
 			{% if app.user %}
-				<div style="float: rigth; padding-right: 50px;">
+				<div style="float: rigth;">
 					<i class="fa fa-user text-warning"></i>
 					<span class="text-warning">
 						Bonjour

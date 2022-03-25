@@ -2,92 +2,122 @@
 
 {% block body %}
 
-    <div class="row">
-        <div class="col-12">
-            {% include "include/_flashes.html.twig" %}
+	<div class="row mt"></div>
 
-        `</div>
-    </div>
+	<div class="row">
+		<div class="col-12">
+			{% include "include/_flashes.html.twig" %}
 
-    <div class="row">
-        <div class="col-6 mt-4">
+			`</div>
+	</div>
 
-            <h3 class="h4">Commentaires en ligne</h3>
+	<div class="row">
 
 
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Contenu</th>
-                    <th>Posté sur</th>
-                    <th>Crée le</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
+		<div class="col-12 bg-info p-4 rounded">
+			<span>Total des commentaires créés :
+				{{ total }}</span>
+			<span class="ps-3">Total commentaires en ligne :
+				{{ totalInline }}</span>
+			<span class="ps-3">Total commentaires archivés :
+				{{ totalOutline }}</span>
+		</div>
 
-                {% if commentaries is not empty %}
-                    {% for commentary in commentaries %}
-                        {% if commentary.deletedAt is null %}
+	</div>
 
-                            <tr>
-                                <td>{{ commentary.comment | slice(0,15) }}</td>
-                                <td>{{ commentary.article.title | slice(0, 10) }}</td>
-                                <td>{{ commentary.createdAt | date('d/m/Y') }}</td>
-                                <td>
-                                    <a href="{{ path('soft_delete_commentary', {'id': commentary.id}) }}" class="btn btn-info" title="Modifier mon profil"><i class="fa fa-trash"></i></a>
-                                </td>
-                            </tr>
+	<div class="row">
+		<div class="col-6 mt-4">
 
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
+			<h3 class="h4">Commentaires en ligne</h3>
 
-                </tbody>
-            </table>
-        </div> {# END .col-6 #}
 
-        <div class="col-6 mt-4">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Contenu</th>
+						<th>Posté sur</th>
+						<th>Crée le</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% set countOn = 0 %}
+					{% set countOff = 0 %}
 
-            <h3 class="h4">Commentaires archivés</h3>
+					{% if commentaries is not empty %}
+						{% for commentary in commentaries %}
+							{% if commentary.deletedAt is null %}
+								{% set countOn = countOn + 1 %}
+								<tr>
+									<td>{{ commentary.comment | slice(0,15) }}</td>
+									<td>{{ commentary.article.title | slice(0, 10) }}</td>
+									<td>{{ commentary.createdAt | date('d/m/Y') }}</td>
+									<td>
+										<a href="{{ path('soft_delete_commentary', {'id': commentary.id}) }}" class="btn btn-info" title="Modifier mon profil">
+											<i class="fa fa-trash"></i>
+										</a>
+									</td>
+								</tr>
+							{% endif %}
+						{% endfor %}
+					{% endif %}
 
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Contenu</th>
-                    <th>Posté sur</th>
-                    <th>Crée le</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
+				</tbody>
+			</table>
+			<p>Total :
+				{{countOn}}</p>
+		</div>
+		{# END .col-6 #}
 
-                {% if commentaries is not empty %}
-                    {% for commentary in commentaries %}
-                        {% if commentary.deletedAt is not null %}
+		<div class="col-6 mt-4">
 
-                            <tr>
-                                <td>{{ commentary.comment | slice(0,15) }}</td>
-                                <td>{{ commentary.article.title | slice(0, 10) }}</td>
-                                <td>{{ commentary.createdAt | date('d/m/Y') }}</td>
-                                <td>
-                                    <a href="{{ path('soft_delete_commentary', {'id': commentary.id}) }}" class="btn btn-info" title="Modifier mon profil"><i class="fa fa-trash-restore"></i></a>
-                                </td>
-                            </tr>
+			<h3 class="h4">Commentaires archivés</h3>
 
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Contenu</th>
+						<th>Posté sur</th>
+						<th>Crée le</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
 
-                </tbody>
-            </table>
+					{% if commentaries is not empty %}
+						{% for commentary in commentaries %}
+							{% if commentary.deletedAt is not null %}
 
-        </div>
+								<tr>
+									<td>{{ commentary.comment | slice(0,15) }}</td>
+									<td>{{ commentary.article.title | slice(0, 10) }}</td>
+									<td>{{ commentary.createdAt | date('d/m/Y') }}</td>
+									<td>
+										{% if commentary.deletedAt is null %}
+											<a href="{{ path('show_user_commentaries', {'id': commentary.id}) }}" onclick="return confirm('Voulez-vous vraiment archiver ce commentaire ?')" class="btn btn-info" title="Modifier mon profil">
+												<i class="fa fa-trash-restore"></i>
+											</a>
+											&nbsp;
+										{% else %}
+											<a href="{{ path('restore_commentary', {'id': commentary.id} ) }}" class="btn btn-outline-info">
+												<i class="fa fa-trash-restore"></i>
+											</a>
+											&nbsp;
+										{% endif %}
+									</td>
+								</tr>
 
-    </div> {# END .row #}
+							{% endif %}
+						{% endfor %}
+					{% endif %}
 
+				</tbody>
+			</table>
+
+		</div>
+
+	</div>
+	{# END .row #}
 
 
 {% endblock %}
-
-
